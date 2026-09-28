@@ -63,10 +63,9 @@ button:disabled{opacity:.65;cursor:wait}
 <select id="numberAttending" style="width:100%;padding:14px 15px;border:1px solid #d7ba7b;border-radius:28px;background:rgba(255,255,255,.75);font:16px Georgia;color:#4b4037">
 <option value="">Select number of guests</option>
 <option value="1">1 guest</option>
-<option value="2">2 guests</option>
 </select>
 </div>
-<div class="note">This invitation is for a maximum of 2 guests.</div>
+<div class="note">This invitation is for a maximum of 1 guest.</div>
 
 
 <div class="field">
@@ -124,8 +123,8 @@ form.addEventListener("submit", async function(event) {
   }
 
   
-  if (count > 2) {
-    showError("This RSVP allows a maximum of 2 guests.");
+  if (count > 1) {
+    showError("This RSVP allows a maximum of 1 guest.");
     return;
   }
 

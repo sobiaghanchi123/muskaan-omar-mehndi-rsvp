@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Muskaan & Omar — RSVP</title>
+<style>
+:root{--gold:#a87924;--gold-light:#d7ba7b;--ink:#4b4037;--cream:#fbf7ef}
+*{box-sizing:border-box}
+body{margin:0;background:#f2ece2;color:var(--ink);font-family:Georgia,"Times New Roman",serif}
+.page{min-height:100vh;padding:16px 10px 38px}
+.card{max-width:620px;margin:auto;background:var(--cream);border:1px solid #c9a45d;box-shadow:0 10px 36px rgba(80,55,25,.14)}
+.hero{overflow:hidden}.hero img{display:block;width:100%;height:auto}
+.form{padding:28px 20px 34px}.orn{text-align:center;color:var(--gold);font-size:22px}
+.title{text-align:center;color:var(--gold);font-size:34px;font-style:italic;margin:5px 0 7px}
+.subtitle{text-align:center;color:#806d59;font-size:14px;margin:0 0 22px}
+.field{margin-bottom:17px}
+label{display:block;margin-bottom:7px;color:#644c30;font-size:16px}
+input{width:100%;padding:14px 15px;border:1px solid var(--gold-light);border-radius:28px;background:rgba(255,255,255,.75);color:var(--ink);font:16px Georgia,"Times New Roman",serif;outline:0}
+input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(168,121,36,.12)}
+.attendance{display:grid;gap:11px}.attendance input{position:absolute;opacity:0;pointer-events:none}
+.attendance label{margin:0;padding:14px 12px;text-align:center;border:1px solid var(--gold-light);border-radius:30px;cursor:pointer;letter-spacing:.4px;background:rgba(255,255,255,.55)}
+.attendance input:checked+label{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold);background:#fffaf0}
+.note{text-align:center;color:#806d59;font-size:13px;margin:-7px 0 18px}
+button{width:100%;border:1px solid #936718;border-radius:30px;padding:16px;background:var(--gold);color:white;font:600 17px Georgia,"Times New Roman",serif;cursor:pointer}
+button:disabled{opacity:.65;cursor:wait}
+.msg{display:none;margin-top:16px;padding:14px;border-radius:12px;text-align:center;line-height:1.45;font:14px Arial,sans-serif}
+.ok{background:#edf7eb;color:#315e36}.err{background:#fff0ef;color:#8a3f39}
+.footer{text-align:center;margin-top:20px;color:#8c7658;font-size:13px}
+@media(max-width:600px){.page{padding:0 0 30px}.card{border-left:0;border-right:0}}
+</style>
+</head>
+<body>
+<div class="page"><div class="card">
+<div class="hero"><img src="mehndi-invitation.jpeg" alt="Muskaan & Omar Mehndi Celebration"></div>
+<div class="form">
+<div class="orn">✦ ❈ ✦</div>
+<div class="title">Will you join us?</div>
+<div class="subtitle">Close Family RSVP • Please RSVP by October 31, 2026</div>
+
+<form id="rsvpForm">
+<div class="field">
+<label for="guestName">Guest Name</label>
+<input id="guestName" type="text" placeholder="Enter your full name" required>
+</div>
+
+<div class="field">
+<label for="contact">Email or Phone</label>
+<input id="contact" type="text" placeholder="Email or Phone" required>
+</div>
+
+<div class="field">
+<label>Will you join us?</label>
+<div class="attendance">
+<div><input id="yes" type="radio" name="attending" value="Yes" required><label for="yes">YES, I'LL BE THERE</label></div>
+<div><input id="no" type="radio" name="attending" value="No"><label for="no">SORRY, I CAN'T ATTEND</label></div>
+</div>
+</div>
+
+
+<div class="field">
+<label for="numberAttending">Number of guests attending</label>
+<input id="numberAttending" type="number" min="1" step="1" placeholder="Enter number of guests" required>
+</div>
+<div class="note">Close Family RSVP — no guest limit.</div>
+
+
+<div class="field">
+<label for="message">Message to Muskaan & Omar</label>
+<input id="message" type="text" placeholder="Optional">
+</div>
+
+<button id="submitButton" type="submit">Submit RSVP</button>
+<div id="successMessage" class="msg ok">Thank you! Your RSVP has been received. We can't wait to celebrate with you! ❤️</div>
+<div id="errorMessage" class="msg err"></div>
+</form>
+
+<div class="footer">With love, Muskaan & Omar</div>
+</div></div></div>
+
+<script>
+const APPS_SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbwtr7unkpd8YpsGkrK49hhOsWzxXj-I0iu9h94AhVcfo9vdj859ih6oCjC04RZtkY5j/exec";
+
+const RSVP_TYPE = "family";
+
+const form = document.getElementById("rsvpForm");
+const submitButton = document.getElementById("submitButton");
+const successMessage = document.getElementById("successMessage");
+const errorMessage = document.getElementById("errorMessage");
+
+function showError(message) {
+  errorMessage.textContent = message;
+  errorMessage.style.display = "block";
+}
+
+form.addEventListener("submit", async function(event) {
+  event.preventDefault();
+
+  successMessage.style.display = "none";
+  errorMessage.style.display = "none";
+
+  const selected = document.querySelector(
+    'input[name="attending"]:checked'
+  );
+
+  if (!selected) {
+    showError("Please select whether you will attend.");
+    return;
+  }
+
+  const count = selected.value === "Yes"
+    ? Number(document.getElementById("numberAttending").value)
+    : 0;
+
+  if (selected.value === "Yes" &&
+      (!Number.isInteger(count) || count < 1)) {
+    showError("Please select the number of guests attending.");
+    return;
+  }
+
+  
+
+  if (!APPS_SCRIPT_URL ||
+      APPS_SCRIPT_URL.includes("PASTE_YOUR_GOOGLE")) {
+    showError("Please add your Google Apps Script /exec URL first.");
+    return;
+  }
+
+  submitButton.disabled = true;
+  submitButton.textContent = "Submitting...";
+
+  const data = {
+    rsvpType: RSVP_TYPE,
+    guestName: document.getElementById("guestName").value.trim(),
+    contact: document.getElementById("contact").value.trim(),
+    attending: selected.value,
+    numberAttending: String(count),
+    message: document.getElementById("message").value.trim()
+  };
+
+  try {
+    const response = await fetch(APPS_SCRIPT_URL, {
+      method: "POST",
+      headers: {"Content-Type":"text/plain;charset=utf-8"},
+      body: JSON.stringify(data)
+    });
+
+    const result = await response.json();
+
+    if (!result.success) throw new Error(result.message);
+
+    successMessage.style.display = "block";
+    form.reset();
+    submitButton.disabled = false;
+    submitButton.textContent = "RSVP Submitted ✓";
+
+    successMessage.scrollIntoView({
+      behavior:"smooth",
+      block:"center"
+    });
+
+  } catch(error) {
+    showError(
+      error.message ||
+      "We couldn't submit your RSVP. Please try again."
+    );
+    submitButton.disabled = false;
+    submitButton.textContent = "Submit RSVP";
+  }
+});
+</script>
+</body>
+</html>
